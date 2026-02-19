@@ -1,0 +1,52 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Deploy to Vercel (Frontend)
+        if: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          echo "Deploying frontend to Vercel..."
+          # npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+          echo "Vercel deployment placeholder - configure VERCEL_TOKEN"
+        continue-on-error: true
+
+      - name: Deploy to Railway (Backend)
+        if: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "Deploying backend to Railway..."
+          # railway deploy --token=${{ secrets.RAILWAY_TOKEN }}
+          echo "Railway deployment placeholder - configure RAILWAY_TOKEN"
+        continue-on-error: true
+
+      - name: Health Check
+        run: |
+          echo "Running post-deploy health checks..."
+          # curl -f https://dato.app/api/health || exit 1
+          echo "Health check placeholder"

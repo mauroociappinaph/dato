@@ -1,0 +1,61 @@
+name: Health Audit
+
+on:
+  schedule:
+    # Daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check disk usage
+        run: |
+          echo "## Disk Usage Report" >> $GITHUB_STEP_SUMMARY
+          df -h >> $GITHUB_STEP_SUMMARY
+          
+          # Check if usage > 80%
+          USAGE=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
+          if [ "$USAGE" -gt 80 ]; then
+            echo "::warning::Disk usage is above 80%: ${USAGE}%"
+          fi
+
+      - name: Check git status
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::warning::There are uncommitted changes"
+            echo "### Uncommitted Changes" >> $GITHUB_STEP_SUMMARY
+            git status --short >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### Git Status: Clean ✓" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check dependencies
+        run: |
+          echo "### Dependency Check" >> $GITHUB_STEP_SUMMARY
+          npm outdated --json || true >> $GITHUB_STEP_SUMMARY
+
+      - name: Send Telegram notification (optional)
+        if: ${{ secrets.TELEGRAM_BOT_TOKEN && secrets.TELEGRAM_CHAT_ID }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            🏥 DATO Health Audit Complete
+            
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            
+            Check the workflow for details.
+        continue-on-error: true
+
+      - name: Summary
+        run: |
+          echo "### Health Audit Complete" >> $GITHUB_STEP_SUMMARY
+          echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY

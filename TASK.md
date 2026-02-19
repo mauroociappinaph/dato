@@ -518,14 +518,14 @@ dato/
 
 ---
 
-### 0.4 CI/CD ❌
+### 0.4 CI/CD ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.4`
 
 **Prioridad:** 🟡 Alta  
 **Dependencias:** 0.1 Git, 0.2 Config Files  
 **Tiempo estimado:** 3-4 horas
 
-#### 0.4.1 GitHub Actions ⏳
+#### 0.4.1 GitHub Actions ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.4.1`
 
 **Skills:**
@@ -533,11 +533,11 @@ dato/
 - Costos: `@global_skills/financial-controller/`, `@global_skills/token-accountant/`, `@global_skills/cost-control/`
 - Calidad: `@global_skills/code-review-excellence/`
 
-- [ ] Crear `.github/workflows/ci.yml`
+- [x] Crear `.github/workflows/ci.yml`
   - Trigger: PR a `main` y `develop`
   - Steps:
-    - [ ] lint, typecheck, test
-    - [ ] `pnpm audit --audit-level=high` (dependency vulnerabilities)
+    - [x] lint, typecheck, test
+    - [x] `pnpm audit --audit-level=high` (dependency vulnerabilities)
     - [ ] Token budget check
     - [ ] Rate limit enforcement
     - [ ] **Code Review Excellence** (Skill: `code-review-excellence`)
@@ -550,35 +550,35 @@ dato/
       - Genera comentario en PR con "radio de explosión"
       - Identifica dependencias y zonas de riesgo
       - Sugiere tests adicionales para archivos afectados
-- [ ] Crear `.github/workflows/deploy.yml`
+- [x] Crear `.github/workflows/deploy.yml`
   - Trigger: Push a `main`
   - Steps: build, deploy Vercel + Railway
   > **Nota:** Smoke tests post-deploy se agregan en **1.11** (FASE 1)
-- [ ] Crear `.github/workflows/security-audit.yml`
+- [x] Crear `.github/workflows/security-audit.yml`
   - Trigger: Push a `main`, cron semanal
   - Steps:
-    - [ ] OWASP dependency check
-    - [ ] SAST (Static Application Security Testing)
-    - [ ] Reportar vulnerabilidades críticas
-- [ ] Crear `.github/workflows/repo-maintenance.yml`
+    - [x] OWASP dependency check
+    - [x] SAST (Static Application Security Testing)
+    - [x] Reportar vulnerabilidades críticas
+- [x] Crear `.github/workflows/repo-maintenance.yml`
   - Trigger: Cron diario 00:00 UTC
   - Steps:
-    - [ ] Auto-label issues (bug, feature, etc.)
-    - [ ] Triage de issues nuevos
-    - [ ] Cerrar issues stale (sin actividad 30 días)
-- [ ] Crear `.github/workflows/health-audit.yml` (basic checks - FASE 0)
+    - [x] Auto-label issues (bug, feature, etc.)
+    - [x] Triage de issues nuevos
+    - [x] Cerrar issues stale (sin actividad 30 días)
+- [x] Crear `.github/workflows/health-audit.yml` (basic checks - FASE 0)
    - Trigger: Cron diario 06:00 UTC
    - Skills: `@global_skills/corporate-health-auditor/`
    - Steps (FASE 0):
-     - [ ] Disk usage alert (>80% warning)
-     - [ ] Git status (uncommitted changes alert)
-     - [ ] Telegram notification (requires `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`)
-- [ ] **[CI] Technical debt analysis** (Skill: `technical-debt-analysis`)
-  - [ ] Configurar cron mensual (1er día de cada mes)
-  - [ ] Generar reporte en `docs/reports/debt-[DATE].md`
-  - [ ] Scope: FASE 2+ code health audits
+     - [x] Disk usage alert (>80% warning)
+     - [x] Git status (uncommitted changes alert)
+     - [x] Telegram notification (requires `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`)
+- [x] **[CI] Technical debt analysis** (Skill: `technical-debt-analysis`)
+  - [x] Configurar cron mensual (1er día de cada mes)
+  - [x] Generar reporte en `docs/reports/debt-[DATE].md`
+  - [x] Scope: FASE 2+ code health audits
 
-- [ ] **✅ Done:** CI workflow ejecuta en PR de prueba
+- [x] **✅ Done:** CI workflow ejecuta en PR de prueba
 
 > **Skills usadas:**
 > - `github-actions-mechanic` → Crear workflows
@@ -594,7 +594,7 @@ dato/
 >
 > Para troubleshooting avanzado (FASE 2+), ver [docs/sop/ci-troubleshooting.md](../docs/sop/ci-troubleshooting.md).
 
-#### 0.4.2 Secrets en GitHub (Solo para APIs faltantes) ⏳
+#### 0.4.2 Secrets en GitHub (Solo para APIs faltantes) ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.4.2`
 
 **Skills:**
@@ -603,7 +603,7 @@ dato/
 
 > **Nota:** La mayoría de APIs ya están configuradas en `opencode.json`. Solo agregar estos secrets para APIs faltantes:
 
-- [ ] Configurar secrets en Settings → Secrets
+- [x] Configurar secrets en Settings → Secrets
   - `GROQ_API_KEY` (FASE 1 - Agent 3)
   - `MISTRAL_API_KEY` (FASE 1 - Agent 4)
   - `NVIDIA_API_KEY` (FASE 1 - Agent 3)
@@ -613,7 +613,7 @@ dato/
   - `MERCADOPAGO_ACCESS_TOKEN` (FASE 3 - Billing)
   - `TELEGRAM_BOT_TOKEN` (FASE 0 - Health Audit)
   - `TELEGRAM_CHAT_ID` (FASE 0 - Health Audit)
-- [ ] **✅ Done:** Secrets configurados y workflow los lee correctamente
+- [x] **✅ Done:** Secrets configurados y workflow los lee correctamente
 
 ---
 

@@ -1,0 +1,96 @@
+name: Technical Debt Analysis
+
+on:
+  schedule:
+    # Monthly on the 1st at 00:00 UTC
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Analyze code complexity
+        run: |
+          echo "## Technical Debt Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "Date: $(date -u '+%Y-%m-%d')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Count lines of code
+        run: |
+          echo "### Code Statistics" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # TypeScript files
+          TS_FILES=$(find . -name "*.ts" -o -name "*.tsx" | grep -v node_modules | grep -v .next | grep -v dist | wc -l)
+          echo "- TypeScript files: $TS_FILES" >> $GITHUB_STEP_SUMMARY
+          
+          # Total lines
+          TS_LINES=$(find . -name "*.ts" -o -name "*.tsx" | grep -v node_modules | grep -v .next | grep -v dist | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
+          echo "- Total TypeScript lines: $TS_LINES" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check for TODOs and FIXMEs
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### TODOs & FIXMEs" >> $GITHUB_STEP_SUMMARY
+          
+          TODOS=$(grep -r "TODO" --include="*.ts" --include="*.tsx" . | grep -v node_modules | grep -v .next | wc -l)
+          FIXMES=$(grep -r "FIXME" --include="*.ts" --include="*.tsx" . | grep -v node_modules | grep -v .next | wc -l)
+          
+          echo "- TODOs: $TODOS" >> $GITHUB_STEP_SUMMARY
+          echo "- FIXMEs: $FIXMES" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create report directory
+        run: mkdir -p docs/reports
+
+      - name: Generate report
+        run: |
+          REPORT_DATE=$(date -u '+%Y-%m-%d')
+          REPORT_FILE="docs/reports/debt-${REPORT_DATE}.md"
+          
+          cat > $REPORT_FILE << REPORT
+          # Technical Debt Analysis - $REPORT_DATE
+          
+          Generated automatically by GitHub Actions.
+          
+          ## Summary
+          
+          - TypeScript files: $(find . -name "*.ts" -o -name "*.tsx" | grep -v node_modules | grep -v .next | grep -v dist | wc -l)
+          - TODOs: $(grep -r "TODO" --include="*.ts" --include="*.tsx" . | grep -v node_modules | grep -v .next | wc -l)
+          - FIXMEs: $(grep -r "FIXME" --include="*.ts" --include="*.tsx" . | grep -v node_modules | grep -v .next | wc -l)
+          
+          ## Recommendations
+          
+          Review and address the TODOs and FIXMEs identified above.
+          REPORT
+          
+          echo "Report generated: $REPORT_FILE"
+
+      - name: Commit report
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/reports/*.md 2>/dev/null || true
+          git diff --quiet && git diff --staged --quiet || git commit -m "docs: add tech debt report $(date -u '+%Y-%m-%d')"
+        continue-on-error: true
+
+      - name: Push report
+        run: git push
+        continue-on-error: true
