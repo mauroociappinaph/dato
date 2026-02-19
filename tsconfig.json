@@ -5,6 +5,10 @@
     "paths": {
       "@dato/shared": ["packages/shared/src"],
       "@dato/shared/*": ["packages/shared/src/*"],
+      "@dato/types": ["packages/types/src"],
+      "@dato/types/*": ["packages/types/src/*"],
+      "@dato/ui": ["packages/ui/src"],
+      "@dato/ui/*": ["packages/ui/src/*"],
       "@dato/agents": ["packages/agents/src"],
       "@dato/agents/*": ["packages/agents/src/*"],
       "@dato/database": ["packages/database/src"],
@@ -15,6 +19,8 @@
     { "path": "./apps/web" },
     { "path": "./apps/api" },
     { "path": "./packages/shared" },
+    { "path": "./packages/types" },
+    { "path": "./packages/ui" },
     { "path": "./packages/agents" },
     { "path": "./packages/database" }
   ],

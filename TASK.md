@@ -209,7 +209,7 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
   - [ ] Crear `docs/adr/` directory
   - [ ] Documentar decisiones arquitectónicas mayores (ADR-001, ADR-002, etc.)
 
-### 0.1 Git & Repositorio ❌
+### 0.1 Git & Repositorio ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.1`
 
 **Prioridad:** 🔴 Crítica  
@@ -220,29 +220,29 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
 - DevOps: `@global_skills/git-advanced-workflows/`, `@global_skills/git-flow-sentinel/`
 
 
-- [ ] **0.1.1** Crear repositorio en GitHub
+- [x] **0.1.1** Crear repositorio en GitHub
   ```bash
   gh repo create dato --public --description "Política argentina verificada con datos reales"
   ```
 
-- [ ] **0.1.2** Configurar remote y push inicial
+- [x] **0.1.2** Configurar remote y push inicial
   ```bash
   git remote add origin https://github.com/mauroociappina/dato.git
   git branch -M main
   git push -u origin main
   ```
 
-- [ ] **0.1.3** Crear rama `develop`
+- [x] **0.1.3** Crear rama `develop`
   ```bash
   git checkout -b develop
   git push -u origin develop
   ```
 
-- [ ] **0.1.4** Configurar protección de ramas (GitHub Settings)
-  - [ ] `main`: Require PR review, Require status checks
-  - [ ] `develop`: Require PR review (opcional)
+- [x] **0.1.4** Configurar protección de ramas (GitHub Settings)
+  - [x] `main`: Require PR review, Require status checks
+  - [x] `develop`: Require PR review (opcional)
 
-- [ ] **0.1.5** Configurar branch default en GitHub
+- [x] **0.1.5** Configurar branch default en GitHub
   - Settings → Branches → Default: `develop`
 
 ---
@@ -460,7 +460,7 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
 
 ---
 
-### 0.3 Estructura de Directorios ❌
+### 0.3 Estructura de Directorios ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.3`
 
 **Prioridad:** 🔴 Crítica  
@@ -510,11 +510,11 @@ dato/
 └── docs/                   # ✅ Ya existe
 ```
 
-- [ ] **0.3.1** Crear estructura `apps/`
-- [ ] **0.3.2** Crear estructura `packages/`
-- [ ] **0.3.3** Crear estructura `tests/`
-- [ ] **0.3.4** Inicializar package.json en cada sub-proyecto
-- [ ] **✅ Done:** Estructura creada y `pnpm install -r` ejecuta sin errores
+- [x] **0.3.1** Crear estructura `apps/`
+- [x] **0.3.2** Crear estructura `packages/`
+- [x] **0.3.3** Crear estructura `tests/`
+- [x] **0.3.4** Inicializar package.json en cada sub-proyecto
+- [x] **✅ Done:** Estructura creada y `pnpm install -r` ejecuta sin errores
 
 ---
 
