@@ -1,8 +1,290 @@
 # SOP-002: Ejecución de Agentes - DATO
 
+> **Última actualización:** 2026-02-19
+> **Versión:** 2.0
+>
 > Ver también: [Especificaciones Técnicas de Agentes](../specs/agents.md)
 
-## Configuración de LLM Providers
+---
+
+## 2.0 Handoff Protocol
+
+### Flujo de Agentes
+
+```
+Agent 1          Agent 2           Agent 3           Agent 4          Agent 5
+Collector   →    Extractor    →    Fact Checker →   Simplifier  →   Publisher
+    │               │                 │                 │               │
+    ▼               ▼                 ▼                 ▼               ▼
+ datos brutos   claims extraídos  verificaciones   explicación     publicado
+```
+
+---
+
+## 2.1 Checklist de Handoff
+
+### Agent 1 → Agent 2 (Collector → Extractor)
+
+```
+□ Datos recolectados guardados en DB
+□ source_url documentado para cada dato
+□ Timestamp de recolección registrado
+□ Formato de output válido:
+  {
+    "data": [...],
+    "source": "INDEC|BCRA|BOLETIN_OFICIAL",
+    "collected_at": "ISO8601"
+  }
+```
+
+### Agent 2 → Agent 3 (Extractor → Fact Checker)
+
+```
+□ Claims extraídos con confidence ≥ 0.7
+□ Speaker identificado
+□ Categoría asignada
+□ Texto original preservado
+□ Formato de output válido:
+  {
+    "claims": [
+      {
+        "text": "...",
+        "speaker": "...",
+        "category": "economy|politics|social|international",
+        "confidence": 0.0-1.0
+      }
+    ]
+  }
+```
+
+### Agent 3 → Agent 4 (Fact Checker → Simplifier)
+
+```
+□ Veredicto asignado (uno de 4)
+□ Confidence calculado
+□ Fuentes citadas con links
+□ Explicación técnica generada
+□ Formato de output válido:
+  {
+    "verdict": "VERDADERO|FALSO|PARCIALMENTE_VERDADERO|SIN_DATOS",
+    "confidence": 0.0-1.0,
+    "explanation": "texto técnico",
+    "sources": [...]
+  }
+```
+
+### Agent 4 → Agent 5 (Simplifier → Publisher)
+
+```
+□ Explicación simple generada (≤100 palabras)
+□ Lenguaje accesible verificado
+□ Badge asignado
+□ Formato de output válido:
+  {
+    "simple_explanation": "...",
+    "badge": "✅|⚠️|❌|⚪"
+  }
+```
+
+---
+
+## 2.2 Edge Cases
+
+### ¿Qué pasa si Agent 2 extrae 0 claims?
+
+```
+ACCION:
+1. Registrar el texto como "sin claims verificables"
+2. Marcar como OPINIÓN si el texto es subjetivo
+3. No continuar a Agent 3
+4. Loggear para análisis posterior
+
+OUTPUT:
+{
+  "claims": [],
+  "reason": "no_verifiable_claims",
+  "suggested_action": "skip_factcheck"
+}
+```
+
+### ¿Qué pasa si Agent 3 no encuentra datos?
+
+```
+ACCION:
+1. Asignar veredicto: SIN_DATOS
+2. Confidence: 0.0
+3. Listar fuentes consultadas (aunque vacías)
+4. Sugerir fuentes alternativas si las hay
+
+OUTPUT:
+{
+  "verdict": "SIN_DATOS",
+  "confidence": 0.0,
+  "explanation": "No se encontraron datos oficiales para verificar esta afirmación.",
+  "sources_consulted": ["INDEC", "BCRA", "Boletín Oficial"],
+  "suggested_sources": ["MIN_ECONOMIA", "WORLD_BANK"]
+}
+```
+
+### ¿Qué pasa si Agent 4 falla en simplificar?
+
+```
+ACCION:
+1. Usar template genérico como fallback
+2. Mantener explicación técnica original
+3. Marcar como "requiere revisión manual"
+
+FALLBACK TEMPLATE:
+"No pudimos simplificar este dato automáticamente. 
+Consulta la explicación técnica o revisa las fuentes originales."
+
+OUTPUT:
+{
+  "simple_explanation": "[template genérico]",
+  "fallback_used": true,
+  "requires_manual_review": true
+}
+```
+
+---
+
+## 2.3 Formato JSON de Output por Agente
+
+### Agent 1: Data Collector
+
+```json
+{
+  "agent": "agent-1-collector",
+  "version": "1.0.0",
+  "timestamp": "2026-02-19T09:00:00Z",
+  "status": "success|partial|failure",
+  "data": [
+    {
+      "id": "uuid",
+      "type": "economic_indicator|news|official_document",
+      "source": "INDEC|BCRA|BOLETIN_OFICIAL",
+      "source_url": "https://...",
+      "collected_at": "ISO8601",
+      "content": { ... }
+    }
+  ],
+  "metrics": {
+    "items_collected": 5,
+    "duration_ms": 1234,
+    "retries": 0
+  }
+}
+```
+
+### Agent 2: Claim Extractor
+
+```json
+{
+  "agent": "agent-2-extractor",
+  "version": "1.0.0",
+  "timestamp": "2026-02-19T09:05:00Z",
+  "status": "success",
+  "claims": [
+    {
+      "id": "uuid",
+      "text": "La inflación bajó 50%",
+      "speaker": "Presidente",
+      "speaker_party": "Partido X",
+      "speaker_role": "Presidente",
+      "category": "economy",
+      "date_said": "2026-02-18",
+      "source_type": "speech|interview|social_media|news|official",
+      "source_url": "https://...",
+      "context": "Discurso en rally",
+      "confidence": 0.92,
+      "verifiable": true
+    }
+  ],
+  "metrics": {
+    "claims_extracted": 3,
+    "avg_confidence": 0.89,
+    "duration_ms": 2345,
+    "llm_tokens": 1500
+  }
+}
+```
+
+### Agent 3: Fact Checker
+
+```json
+{
+  "agent": "agent-3-factchecker",
+  "version": "1.0.0",
+  "timestamp": "2026-02-19T09:10:00Z",
+  "claim_id": "uuid",
+  "status": "verified",
+  "verdict": "FALSO",
+  "confidence": 0.89,
+  "explanation": "Según datos del INDEC, la inflación interanual bajó del 211% al 117%...",
+  "simple_explanation": null,
+  "sources": [
+    {
+      "name": "INDEC",
+      "url": "https://indec.gob.ar/...",
+      "data": {
+        "value": 117.0,
+        "unit": "%",
+        "period": "2024-12"
+      }
+    }
+  ],
+  "metrics": {
+    "sources_consulted": 3,
+    "duration_ms": 4567,
+    "llm_tokens": 2500,
+    "cost_usd": 0.0023
+  }
+}
+```
+
+### Agent 4: Simplifier
+
+```json
+{
+  "agent": "agent-4-simplifier",
+  "version": "1.0.0",
+  "timestamp": "2026-02-19T09:15:00Z",
+  "verification_id": "uuid",
+  "simple_explanation": "El presidente dijo que la inflación bajó 50%, pero los datos oficiales muestran que bajó 44%.",
+  "badge": "❌",
+  "reading_level": "easy",
+  "word_count": 18,
+  "metrics": {
+    "duration_ms": 890,
+    "llm_tokens": 400
+  }
+}
+```
+
+### Agent 5: Publisher
+
+```json
+{
+  "agent": "agent-5-publisher",
+  "version": "1.0.0",
+  "timestamp": "2026-02-19T09:20:00Z",
+  "verification_id": "uuid",
+  "channels": ["web", "twitter", "telegram"],
+  "published": {
+    "web": { "url": "https://dato.app/claim/abc", "success": true },
+    "twitter": { "tweet_id": "123456", "success": true },
+    "telegram": { "message_id": 789, "success": true }
+  },
+  "metrics": {
+    "channels_count": 3,
+    "duration_ms": 3456
+  }
+}
+```
+
+---
+
+## 2.4 Configuración de LLM Providers
 
 | Agente | LLM Provider | Modelo | Uso |
 |--------|--------------|--------|-----|
@@ -16,265 +298,65 @@
 
 ---
 
-### 2.1 Agent 1: Data Collector
+## 2.5 Ejecución Manual
 
-#### Propósito
-Recolectar datos de fuentes oficiales (INDEC, BCRA, Boletín Oficial) cada 1-3 horas.
-
-#### Ejecución Manual
+### Agent 1: Data Collector
 
 ```bash
-# Via Kilo CLI
 kilo run "Collect economic data from INDEC"
-
-# Via script directo
-cd apps/api
 pnpm run agents:collector --source=INDEC
-pnpm run agents:collector --source=BCRA
-pnpm run agents:collector --source=all
 ```
 
-#### Ejecución Automática (Cron)
-
-```yaml
-# Configuración en apps/api/src/cron/collector.cron.ts
-
-jobs:
-  - name: indec-daily
-    schedule: "0 9 * * *"    # 9:00 AM diario
-    source: INDEC
-    
-  - name: bcra-hourly
-    schedule: "0 */3 * * *"  # Cada 3 horas
-    source: BCRA
-    
-  - name: boletin-daily
-    schedule: "0 10 * * *"   # 10:00 AM diario
-    source: BOLETIN_OFICIAL
-```
-
-#### Output Esperado
-
-```json
-{
-  "agent": "collector",
-  "timestamp": "2026-02-13T09:00:00Z",
-  "source": "INDEC",
-  "data": [
-    {
-      "indicator": "inflacion",
-      "value": 4.2,
-      "period": "2026-01",
-      "url": "https://indec.gob.ar/..."
-    }
-  ],
-  "status": "success"
-}
-```
-
-#### Manejo de Errores
-
-```
-Si INDEC no responde:
-1. Reintentar 3 veces con backoff (5s, 15s, 45s)
-2. Si persiste, usar cache del día anterior
-3. Registrar error en logs
-4. Notificar via Slack/email si crítico
-```
-
-### 2.2 Agent 2: Claim Extractor
-
-#### Propósito
-Extraer afirmaciones verificables de discursos y noticias.
-
-#### Input Format
-
-```json
-{
-  "text": "El presidente anunció: 'La inflación bajó 50% desde que asumimos'",
-  "source": "YouTube",
-  "speaker": "Presidente",
-  "date": "2026-02-13",
-  "context": "Discurso en rally político"
-}
-```
-
-#### Ejecución
+### Agent 2: Claim Extractor
 
 ```bash
-# Via Kilo CLI
 kilo run "Extract claims from this text: [texto]"
-
-# Via API
-curl -X POST http://localhost:3000/api/v1/agents/extract \
-  -H "Content-Type: application/json" \
-  -d '{"text": "...", "source": "YouTube"}'
+curl -X POST http://localhost:3000/api/v1/agents/extract -d '{"text": "..."}'
 ```
 
-#### Output Esperado
-
-```json
-{
-  "agent": "extractor",
-  "claims": [
-    {
-      "text": "La inflación bajó 50% desde que asumimos",
-      "speaker": "Presidente",
-      "category": "economy",
-      "verifiable": true,
-      "confidence": 0.92
-    }
-  ]
-}
-```
-
-#### Criterios de Aceptación
-
-- Solo extraer afirmaciones con datos cuantificables
-- Ignorar opiniones vagas ("El país va a mejorar")
-- Máximo 5 claims por texto
-- Confidence mínimo: 0.7
-
-### 2.3 Agent 3: Fact Checker
-
-#### Propósito
-Verificar claims contra datos oficiales.
-
-#### Ejecución
+### Agent 3: Fact Checker
 
 ```bash
-# Via Kilo CLI
 kilo run "Verify this claim: [claim]"
-
-# Via API
-curl -X POST http://localhost:3000/api/v1/agents/verify \
-  -H "Content-Type: application/json" \
-  -d '{"claim_id": "abc123"}'
+curl -X POST http://localhost:3000/api/v1/agents/verify -d '{"claim_id": "abc"}'
 ```
 
-#### Confidence Thresholds
-
-| Confidence | Badge | Acción |
-|------------|-------|--------|
-| ≥ 85% | ✅ Verdadero / ❌ Falso | Publicar directamente |
-| 70-84% | ⚠️ Parcialmente verdadero | Publicar con advertencia |
-| < 70% | ⚪ Sin datos suficientes | No publicar, esperar más datos |
-
-#### Output Esperado
-
-```json
-{
-  "agent": "factchecker",
-  "claim_id": "abc123",
-  "verdict": "FALSO",
-  "confidence": 0.89,
-  "explanation": "La inflación bajó 12%, no 50%...",
-  "sources": [
-    {
-      "name": "INDEC",
-      "url": "https://indec.gob.ar/...",
-      "data": {"value": 4.2, "previous": 4.8}
-    }
-  ]
-}
-```
-
-### 2.4 Agent 4: Simplifier
-
-#### Propósito
-Traducir economía compleja a lenguaje simple.
-
-#### Ejecución
+### Agent 4: Simplifier
 
 ```bash
-kilo run "Explain this for a regular person: [dato técnico]"
+kilo run "Explain this for a regular person: [dato]"
 ```
 
-#### Reglas de Output
-
-1. Máximo 3 oraciones
-2. Sin tecnicismos sin definir
-3. Usar ejemplos numéricos concretos
-4. Máximo 150 caracteres por explicación
-
-#### Ejemplo
-
-```
-Input:  "Déficit fiscal primario del 2.1% del PBI"
-Output: "El Estado gastó más de lo que le entró. 
-         Por cada $100 que recibió, gastó $102.10."
-```
-
-### 2.5 Agent 5: Publisher
-
-#### Propósito
-Distribuir contenido verificado a múltiples canales.
-
-#### Canales Configurados
-
-| Canal | Formato | Frecuencia |
-|-------|---------|------------|
-| Web App | Card completo | Tiempo real |
-| Twitter/X | Tuit 280 chars | 3-5/día |
-| Newsletter | Email resumen | Diario 9 AM |
-| Telegram | Mensaje corto | Tiempo real |
-
-#### Ejecución
+### Agent 5: Publisher
 
 ```bash
-kilo run "Publish verification abc123 to all channels"
-
-# Canal específico
-kilo run "Publish verification abc123 to Twitter"
-```
-
-### 2.6 Agent 6: Billing
-
-#### Propósito
-Gestionar suscripciones y pagos.
-
-#### Eventos Manejados
-
-| Evento | Acción |
-|--------|--------|
-| `subscription.created` | Activar Premium, enviar email |
-| `subscription.deleted` | Marcar fin de período, enviar email |
-| `payment.failed` | Iniciar dunning (3 intentos) |
-| `payment.succeeded` | Renovar acceso, actualizar DB |
-
-#### Webhook Stripe
-
-```bash
-# Test local
-stripe listen --forward-to localhost:3000/webhooks/stripe
-
-# Producción
-# Configurar en Stripe Dashboard → Webhooks
-```
-
-### 2.7 Agent 7: Learning Loop
-
-#### Propósito
-Analizar métricas y mejorar el sistema.
-
-#### Métricas Diarias
-
-| Métrica | Fuente | Umbral |
-|---------|--------|--------|
-| Usuarios activos | Supabase | Trend up |
-| Engagement rate | Analytics | > 30% |
-| Fact-check accuracy | Auditoría | > 95% |
-| Latencia p95 | APM | < 100ms |
-
-#### Ejecución
-
-```bash
-# Reporte diario
-kilo run "Generate daily learning report"
-
-# Análisis semanal
-kilo run "Analyze weekly trends and suggest improvements"
+kilo run "Publish verification abc to all channels"
 ```
 
 ---
 
+## 2.6 Cron Jobs
+
+```yaml
+# apps/api/src/cron/agents.cron.ts
+
+jobs:
+  - name: collector-indec
+    schedule: "0 9 * * *"
+    agent: agent-1-collector
+    args: { source: INDEC }
+    
+  - name: collector-bcra
+    schedule: "0 */3 * * *"
+    agent: agent-1-collector
+    args: { source: BCRA }
+    
+  - name: collector-boletin
+    schedule: "0 10 * * *"
+    agent: agent-1-collector
+    args: { source: BOLETIN_OFICIAL }
+```
+
+---
+
+*Fin del documento*

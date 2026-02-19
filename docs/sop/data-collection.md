@@ -1,48 +1,109 @@
 # SOP-004: Data Collection - DATO
 
-## SOP-004: Data Collection
+> **Última actualización:** 2026-02-19
+> **Versión:** 2.0
 
-### 4.1 INDEC Scraping
+---
 
-#### Schedule
+## 4.1 Fallback Chain Unificada
 
 ```
-Diario: 9:00 AM Argentina
-URL: https://www.indec.gob.ar/
-Método: Firecrawl MCP
+┌─────────────────────────────────────────────────────────────┐
+│                    FALLBACK CHAIN                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  PASO 1: Firecrawl MCP                                      │
+│  ├── URL conocida → scrape directo                          │
+│  ├── Timeout: 30s                                           │
+│  └── Si falla → PASO 2                                      │
+│                                                              │
+│  PASO 2: Exa Search MCP                                     │
+│  ├── Búsqueda de contenido alternativo                      │
+│  ├── Timeout: 20s                                           │
+│  └── Si falla → PASO 3                                      │
+│                                                              │
+│  PASO 3: DuckDuckGo Search                                  │
+│  ├── Búsqueda web alternativa                               │
+│  ├── Timeout: 15s                                           │
+│  └── Si falla → PASO 4                                      │
+│                                                              │
+│  PASO 4: Cache Local                                        │
+│  ├── Usar datos cacheados (últimas 24h)                    │
+│  ├── Marcar como "cached"                                   │
+│  └── Notificar al equipo                                    │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-#### Procedimiento
+### Retry Procedure (Exponential Backoff)
 
-```bash
-# Via Kilo CLI con Firecrawl
-kilo run "Use firecrawl to scrape INDEC homepage for latest inflation data"
+| Intento | Delay | Acción |
+|---------|-------|--------|
+| 1 | 5s | Reintentar fuente actual |
+| 2 | 10s | Reintentar fuente actual |
+| 3 | 20s | Pasar a siguiente fuente en chain |
 
-# Via script
-cd apps/api
-pnpm run scrape:indec
+**Timeout total máximo:** 120 segundos
+
+---
+
+## 4.2 Checklist de Validación de Datos Scrapeados
+
+Antes de guardar datos, validar:
+
+```
+□ Dato no vacío (value != null/empty)
+□ Formato correcto (número, fecha, texto según tipo)
+□ Fuente identificada y registrada
+│
+□ Para números:
+│   ├── Rango razonable (no negativo para inflación, etc.)
+│   ├── Unidad correcta (%, USD, millones)
+│   └── Período válido (fecha en formato correcto)
+│
+□ Para texto:
+│   ├── Encoding correcto (UTF-8)
+│   ├── Sin caracteres corruptos
+│   └── Longitud razonable (< 10MB)
+│
+□ Metadatos:
+│   ├── Timestamp de recolección
+│   ├── Agente que recolectó (agent-1)
+│   └── URL fuente
 ```
 
-#### Datos a Extraer
+---
 
-| Dato | Selector/Pattern | Frecuencia |
-|------|------------------|------------|
-| IPC (inflación) | Tabla mensual | Mensual |
+## 4.3 Runbooks por Fuente
+
+### Runbook: INDEC
+
+> **Ver:** [runbook-indec.md](./runbooks/runbook-indec.md)
+
+**Schedule:** Diario 9:00 AM Argentina
+
+**URL Principal:** https://www.indec.gob.ar/
+
+**Datos a Extraer:**
+
+| Dato | Endpoint/Selector | Frecuencia |
+|------|-------------------|------------|
+| IPC (inflación) | Tabla mensual principal | Mensual |
 | Pobreza | Informe semestral | Semestral |
 | Empleo | Encuesta permanente | Trimestral |
 | PBI | Informe trimestral | Trimestral |
 
-### 4.2 BCRA Data Sync
+---
 
-#### Schedule
+### Runbook: BCRA
 
-```
-Cada 3 horas
-URL: https://www.bcra.gob.ar/
-Método: API oficial + Firecrawl/Exa backup
-```
+> **Ver:** [runbook-bcra.md](./runbooks/runbook-bcra.md)
 
-#### Datos a Extraer
+**Schedule:** Cada 3 horas
+
+**URL Principal:** https://www.bcra.gob.ar/
+
+**Datos a Extraer:**
 
 | Dato | Endpoint | Frecuencia |
 |------|----------|------------|
@@ -51,157 +112,93 @@ Método: API oficial + Firecrawl/Exa backup
 | Tasas | /api/tasas | Diario |
 | Base monetaria | /api/base | Semanal |
 
-### 4.3 BOLETIN_OFICIAL Scraping
+---
 
-#### Schedule
+### Runbook: Boletín Oficial
 
-```
-Diario: 10:00 AM Argentina
-URL: https://www.boletinoficial.gob.ar/
-Método: Firecrawl MCP + Exa Search
-```
+> **Ver:** [runbook-boletin.md](./runbooks/runbook-boletin.md)
 
-#### Procedimiento
+**Schedule:** Diario 10:00 AM Argentina
 
-```bash
-# Via Kilo CLI con Firecrawl
-kilo run "Use firecrawl to scrape BOLETIN_OFICIAL for latest decrees and resolutions"
+**URL Principal:** https://www.boletinoficial.gob.ar/
 
-# Via Kilo CLI con Exa (backup)
-kilo run "Use exa_search to find official bulletins from Argentina government"
+**Datos a Extraer:**
 
-# Via script
-cd apps/api
-pnpm run scrape:boletin
-```
-
-#### Datos a Extraer
-
-| Dato | Selector/Pattern | Frecuencia |
-|------|------------------|------------|
+| Dato | Sección | Frecuencia |
+|------|---------|------------|
 | Decretos | Sección decretos | Diario |
 | Resoluciones | Sección resoluciones | Diario |
 | Disposiciones | Sección disposiciones | Diario |
 | Avisos oficiales | Sección avisos | Diario |
 
-#### Cron Job
+---
 
-```yaml
-# apps/api/src/cron/collector.cron.ts
+## 4.4 MCP Tools Comparison
 
-- name: boletin-daily
-  schedule: "0 10 * * *"   # 10:00 AM diario
-  source: BOLETIN_OFICIAL
-  timezone: America/Argentina/Buenos_Aires
-```
+| Herramienta | Uso | Cuando usar |
+|-------------|-----|-------------|
+| **Firecrawl** | Scrape directo | URL conocida, estructura predecible |
+| **Exa Search** | Búsqueda/AI | URL desconocida, descubrimiento |
+| **DuckDuckGo** | Web search | Fallback, resultados públicos |
 
-### 4.4 MCP Tools: Firecrawl vs Exa
+---
 
-#### Firecrawl MCP (Primary)
-
-```bash
-# Best for: Scraping contenido específico de URLs conocidas
-kilo run "Use firecrawl_scrape to extract data from https://indec.gob.ar/..."
-
-# Use when:
-# - URL específica conocida
-# - Necesitas contenido completo de la página
-# - Estructura HTML predecible
-```
-
-#### Exa Search MCP (Backup/Discovery)
-
-```bash
-# Best for: Descubrir URLs y buscar contenido
-kilo run "Use exa_search to find inflation data from Argentina government sources"
-
-# Use when:
-# - URL específica no conocida
-# - Necesitas buscar en múltiples fuentes
-# - Firecrawl falla (fallback)
-```
-
-#### Procedimiento Combinado
-
-```bash
-# 1. Intentar Firecrawl primero
-kilo run "Use firecrawl_scrape on [URL]"
-
-# 2. Si falla, usar Exa como backup
-kilo run "Use exa_search to find [data] and then scrape results"
-
-# 3. Guardar datos en Supabase
-kilo run "Save collected data to economic_data table"
-```
-
-### 4.5 YouTube Transcript Extraction
-
-#### Procedimiento
-
-```bash
-# 1. Buscar videos
-kilo run "Search YouTube for 'discurso político Argentina' last 24 hours"
-
-# 2. Extraer transcript
-kilo run "Get transcript from video ID: abc123"
-
-# 3. Enviar a Agent 2
-kilo run "Extract claims from this transcript: [transcript]"
-```
-
-#### Canales Monitoreados
-
-| Canal | Tipo | Frecuencia |
-|-------|------|------------|
-| Casa Rosada | Oficial | Todos los discursos |
-| C5N | Noticias | Segmentos políticos |
-| TN | Noticias | Segmentos económicos |
-| LN+ | Noticias | Entrevistas políticas |
-
-### 4.6 Error Handling
-
-#### Retry Policy (Exponential Backoff)
+## 4.5 Error Handling
 
 ```python
-def collect_data(source):
-    # Exponential backoff: 5s → 10s → 20s
-    # Initial delay: 5000ms (5 seconds)
-    # Per specs/agents.md retry_policy
-    delays = [5, 10, 20]  # seconds
+def collect_with_fallback(source):
+    """
+    Collection with unified fallback chain.
+    Implements exponential backoff: 5s → 10s → 20s
+    """
+    tools = ['firecrawl', 'exa', 'duckduckgo', 'cache']
+    delays = [5, 10, 20]
     
-    for attempt in range(3):
-        try:
-            data = scrape(source)
-            save_to_db(data)
-            return success
-        except TimeoutError:
-            if attempt < 2:
-                wait(delays[attempt])  # Exponential: 5s → 10s → 20s
-        except ValidationError:
-            log_error("Invalid data format")
-            return failure
-        except SourceDownError:
-            use_cache(source)
-            notify_team(f"{source} unavailable")
-            return cached
+    for tool in tools:
+        for attempt in range(3):
+            try:
+                data = collect(source, tool)
+                if validate(data):
+                    save_to_db(data)
+                    return success(tool)
+            except TimeoutError:
+                if attempt < 2:
+                    wait(delays[attempt])
+                continue
+            except ValidationError:
+                log_error(f"Invalid data from {tool}")
+                break
+        
+        # Tool failed, try next
+        log_warning(f"{tool} failed for {source}")
     
-    return failure
-```
-
-#### Retry Configuration
-
-| Parámetro | Valor | Descripción |
-|-----------|-------|-------------|
-| `max_retries` | 3 | Máximo intentos |
-| `backoff` | exponential | Tipo de backoff |
-| `initial_delay_ms` | 5000 | Delay inicial (5s) |
-| Delays | 5s → 10s → 20s | Secuencia exponencial |
-
-#### Fallback Chain
-
-```
-Firecrawl falla → Exa Search → DuckDuckGo → Cache local
+    return failure()
 ```
 
 ---
 
+## 4.6 Cron Jobs Configuration
+
+```yaml
+# apps/api/src/cron/collector.cron.ts
+
+sources:
+  - name: indec-daily
+    schedule: "0 9 * * *"
+    timezone: America/Argentina/Buenos_Aires
+    source: INDEC
+    
+  - name: bcra-every-3h
+    schedule: "0 */3 * * *"
+    timezone: America/Argentina/Buenos_Aires
+    source: BCRA
+    
+  - name: boletin-daily
+    schedule: "0 10 * * *"
+    timezone: America/Argentina/Buenos_Aires
+    source: BOLETIN_OFICIAL
+```
+
+---
+
+*Fin del documento*

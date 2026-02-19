@@ -9,7 +9,7 @@
 
 | Fase | Estado | Progreso |
 |------|--------|----------|
-| FASE 0: Setup | ❌ Pendiente | 0/6 secciones (~25 subtasks) |
+| FASE 0: Setup | ✅ Completo | 6/6 secciones (~25 subtasks) |
 | **CP0: Checkpoint** | 🔒 Bloqueada | Espera FASE 0 |
 | FASE 1: MVP | 🔒 Bloqueada | Espera CP0 (Agentes 1-4) |
 | **CP1: Validación** | 🔒 Bloqueada | Espera FASE 1 |
@@ -678,7 +678,7 @@ dato/
 
 ---
 
-### 0.6 SOP Standardization ⏳
+### 0.6 SOP Standardization ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.6`
 
 **Prioridad:** 🟡 Alta  
@@ -687,47 +687,47 @@ dato/
 
 **Skills:** `@global_skills/sop-workflow-standardizer/`
 
-#### 0.6.1 Fact-Checking SOP Enhancement ⏳
+#### 0.6.1 Fact-Checking SOP Enhancement ✅
 
-- [ ] Aplicar skill a `docs/sop/fact-checking.md`
-  - [ ] Agregar checklist pre-ejecución obligatorio antes de cada verificación
-  - [ ] Documentar flujo de rollback si fuente primaria falla
-  - [ ] Estandarizar templates de output (formato JSON + explicación simple)
-  - [ ] Crear tabla de edge cases con procedimientos específicos
-- [ ] **✅ Done:** SOP de fact-checking con formato estandarizado
+- [x] Aplicar skill a `docs/sop/fact-checking.md`
+  - [x] Agregar checklist pre-ejecución obligatorio antes de cada verificación
+  - [x] Documentar flujo de rollback si fuente primaria falla
+  - [x] Estandarizar templates de output (formato JSON + explicación simple)
+  - [x] Crear tabla de edge cases con procedimientos específicos
+- [x] **✅ Done:** SOP de fact-checking con formato estandarizado
 
-#### 0.6.2 Data Collection SOP Enhancement ⏳
+#### 0.6.2 Data Collection SOP Enhancement ✅
 
-- [ ] Aplicar skill a `docs/sop/data-collection.md`
-  - [ ] Unificar fallback chain en playbook único (Firecrawl → Exa → DuckDuckGo → Cache)
-  - [ ] Crear runbooks por fuente:
-    - [ ] `runbook-indec.md`: Pasos específicos para INDEC
-    - [ ] `runbook-bcra.md`: Pasos específicos para BCRA
-    - [ ] `runbook-boletin.md`: Pasos específicos para Boletín Oficial
-  - [ ] Documentar procedimiento de retry con delays exactos (5s → 10s → 20s)
-  - [ ] Agregar checklist de validación de datos scrapeados
-- [ ] **✅ Done:** SOP de data collection con runbooks por fuente
+- [x] Aplicar skill a `docs/sop/data-collection.md`
+  - [x] Unificar fallback chain en playbook único (Firecrawl → Exa → DuckDuckGo → Cache)
+  - [x] Crear runbooks por fuente:
+    - [x] `runbook-indec.md`: Pasos específicos para INDEC
+    - [x] `runbook-bcra.md`: Pasos específicos para BCRA
+    - [x] `runbook-boletin.md`: Pasos específicos para Boletín Oficial
+  - [x] Documentar procedimiento de retry con delays exactos (5s → 10s → 20s)
+  - [x] Agregar checklist de validación de datos scrapeados
+- [x] **✅ Done:** SOP de data collection con runbooks por fuente
 
-#### 0.6.3 Agent Coordination SOP Enhancement ⏳
+#### 0.6.3 Agent Coordination SOP Enhancement ✅
 
-- [ ] Aplicar skill a `docs/sop/agents.md`
-  - [ ] Definir handoff protocol entre agentes (Agent 1 → 2 → 3 → 4 → 5)
-  - [ ] Crear checklists de handoff: "¿Qué debe output Agent X antes de pasar a Agent Y?"
-  - [ ] Documentar edge cases:
-    - [ ] "¿Qué pasa si Agent 2 extrae 0 claims?"
-    - [ ] "¿Qué pasa si Agent 3 no encuentra datos?"
-    - [ ] "¿Qué pasa si Agent 4 falla en simplificar?"
-  - [ ] Estandarizar formato JSON de output para cada agente
-- [ ] **✅ Done:** SOP de agents con handoffs documentados
+- [x] Aplicar skill a `docs/sop/agents.md`
+  - [x] Definir handoff protocol entre agentes (Agent 1 → 2 → 3 → 4 → 5)
+  - [x] Crear checklists de handoff: "¿Qué debe output Agent X antes de pasar a Agent Y?"
+  - [x] Documentar edge cases:
+    - [x] "¿Qué pasa si Agent 2 extrae 0 claims?"
+    - [x] "¿Qué pasa si Agent 3 no encuentra datos?"
+    - [x] "¿Qué pasa si Agent 4 falla en simplificar?"
+  - [x] Estandarizar formato JSON de output para cada agente
+- [x] **✅ Done:** SOP de agents con handoffs documentados
 
-#### 0.6.4 SOP Wiki Centralizada ⏳
+#### 0.6.4 SOP Wiki Centralizada ✅
 
-- [ ] Crear `docs/sop/WIKI.md` con índice navegable
-  - [ ] Links a todos los SOPs
-  - [ ] Quick reference de checklists
-  - [ ] Troubleshooting index
-- [ ] Configurar versionado de SOPs (fecha de última actualización)
-- [ ] **✅ Done:** Wiki centralizada de SOPs
+- [x] Crear `docs/sop/WIKI.md` con índice navegable
+  - [x] Links a todos los SOPs
+  - [x] Quick reference de checklists
+  - [x] Troubleshooting index
+- [x] Configurar versionado de SOPs (fecha de última actualización)
+- [x] **✅ Done:** Wiki centralizada de SOPs
 
 ---
 
