@@ -1,0 +1,40 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.pyo
+.pyd
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Temp
+*.tmp
+*.temp
+.cache/
+
+# Sensitive files
+opencode.json
+global_skills/google-slides-visual-creator/resources/credentials.json
+global_skills/google-slides-visual-creator/resources/token.pickle

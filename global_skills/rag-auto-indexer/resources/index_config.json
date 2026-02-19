@@ -1,0 +1,9 @@
+{
+  "sources": [
+    "/Users/mauroociappina/.agent-os",
+    "/Users/mauroociappina/.aitk",
+    "/Users/mauroociappina/.mem0"
+  ],
+  "target_memory": "/Users/mauroociappina/.gemini/agents/AGENT_RAG/memory/knowledge_map.md",
+  "ignored_patterns": [".DS_Store", "*.log", "*.tmp"]
+}

@@ -1,0 +1,11 @@
+{
+  "framework": "Next.js",
+  "styling": "Tailwind CSS",
+  "components": "Shadcn/UI",
+  "principles": ["Minimalism", "Accessibility", "Dark Mode First"],
+  "visual_benchmarks": {
+    "dashboard": "Modern SaaS (Linear-style)",
+    "landing": "Bento Grid / Apple-style Typography",
+    "forms": "Float labels / Instant validation"
+  }
+}

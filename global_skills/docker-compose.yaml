@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    environment:
+      - REDIS_ARGS=--requirepass ""
+
+  rag-skill:
+    build:
+      context: .
+      dockerfile: master-rag-2026/Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - OLLAMA_HOST=host.docker.internal
+    depends_on:
+      - redis
+
+  eval-skill:
+    build:
+      context: .
+      dockerfile: agent-evaluation/Dockerfile
+    environment:
+      - OLLAMA_HOST=host.docker.internal
+
+  hunter-skill:
+    build:
+      context: .
+      dockerfile: apify-lead-hunter/Dockerfile
+    environment:
+      - OLLAMA_HOST=host.docker.internal
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}

@@ -1,0 +1,68 @@
+{
+  "default": {
+    "name": "THE DUDE (Internal)",
+    "tier": "unlimited",
+    "description": "Internal system usage",
+    "quotas": {
+      "exa": {"daily_limit": 10000},
+      "gemini-vision": {"daily_limit": 5000},
+      "firecrawl": {"daily_limit": 20000},
+      "e2b": {"daily_limit": 10000},
+      "context7": {"daily_limit": 15000},
+      "browserbase": {"daily_limit": 8000}
+    }
+  },
+  "mauro": {
+    "name": "Mauro (Owner)",
+    "tier": "owner",
+    "description": "Owner account with unlimited access",
+    "quotas": {
+      "exa": {"daily_limit": 10000},
+      "gemini-vision": {"daily_limit": 5000},
+      "firecrawl": {"daily_limit": 20000},
+      "e2b": {"daily_limit": 10000},
+      "context7": {"daily_limit": 15000},
+      "browserbase": {"daily_limit": 8000}
+    },
+    "override_mode": "warn_only"
+  },
+  "client_demo": {
+    "name": "Demo Client",
+    "tier": "free",
+    "description": "Free tier for demo purposes",
+    "quotas": {
+      "exa": {"daily_limit": 100},
+      "gemini-vision": {"daily_limit": 50},
+      "firecrawl": {"daily_limit": 200},
+      "e2b": {"daily_limit": 100},
+      "context7": {"daily_limit": 150},
+      "browserbase": {"daily_limit": 80}
+    }
+  },
+  "client_premium": {
+    "name": "Premium Client",
+    "tier": "premium",
+    "description": "Premium tier with higher quotas",
+    "quotas": {
+      "exa": {"daily_limit": 1000},
+      "gemini-vision": {"daily_limit": 500},
+      "firecrawl": {"daily_limit": 2000},
+      "e2b": {"daily_limit": 1000},
+      "context7": {"daily_limit": 1500},
+      "browserbase": {"daily_limit": 800}
+    }
+  },
+  "client_enterprise": {
+    "name": "Enterprise Client",
+    "tier": "enterprise",
+    "description": "Enterprise tier with maximum quotas",
+    "quotas": {
+      "exa": {"daily_limit": 5000},
+      "gemini-vision": {"daily_limit": 2500},
+      "firecrawl": {"daily_limit": 10000},
+      "e2b": {"daily_limit": 5000},
+      "context7": {"daily_limit": 7500},
+      "browserbase": {"daily_limit": 4000}
+    }
+  }
+}

@@ -1,0 +1,6 @@
+# Post-Mortems Directory
+
+Store post-mortem documents here with naming convention:
+`YYYY-MM-DD-[incident-name].md`
+
+Use template from: `docs/sop/post-mortem-template.md`

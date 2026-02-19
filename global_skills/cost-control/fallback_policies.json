@@ -1,0 +1,55 @@
+{
+  "exa": {
+    "primary": "exa-mcp-server",
+    "fallback": ["duckduckgo-local", "google-search-free"],
+    "fallback_threshold": 0.8,
+    "degradation_mode": "soft_fallback",
+    "quality_loss": 0.3,
+    "throttle_seconds": 5,
+    "description": "Semantic search - fallback acceptable with moderate quality loss"
+  },
+  "gemini-vision": {
+    "primary": "gemini-vision",
+    "fallback": ["ollama-llava", "local-ocr"],
+    "fallback_threshold": 0.9,
+    "degradation_mode": "hard_fail",
+    "quality_loss": 0.7,
+    "description": "Vision AI - CRITICAL: hard fail if quota exceeded, quality required"
+  },
+  "firecrawl": {
+    "primary": "firecrawl-mcp",
+    "fallback": ["playwright-local", "beautifulsoup"],
+    "fallback_threshold": 0.7,
+    "degradation_mode": "soft_fallback",
+    "quality_loss": 0.2,
+    "throttle_seconds": 3,
+    "description": "Web scraping - fallback acceptable with low quality loss"
+  },
+  "e2b": {
+    "primary": "e2b",
+    "fallback": ["local-docker", "subprocess"],
+    "fallback_threshold": 0.85,
+    "degradation_mode": "soft_fallback",
+    "quality_loss": 0.4,
+    "throttle_seconds": 10,
+    "description": "Code execution - fallback acceptable but slower"
+  },
+  "context7": {
+    "primary": "context7",
+    "fallback": ["local-ast-parser", "grep-search"],
+    "fallback_threshold": 0.8,
+    "degradation_mode": "soft_fallback",
+    "quality_loss": 0.5,
+    "throttle_seconds": 5,
+    "description": "Code context - fallback acceptable with moderate quality loss"
+  },
+  "browserbase": {
+    "primary": "browserbase",
+    "fallback": ["playwright-local", "selenium-local"],
+    "fallback_threshold": 0.75,
+    "degradation_mode": "soft_fallback",
+    "quality_loss": 0.3,
+    "throttle_seconds": 8,
+    "description": "Browser automation - fallback acceptable"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "company_name": "Mauro AI Enterprise",
+  "pipeline_version": "4.5",
+  "steps": {
+    "0": { "dept": "Infra", "skill": "git-workflow-hardener", "mcp": "github-mcp-server" },
+    "1": { "dept": "Standards", "skill": "project-naming-enforcer", "mcp": "dude-bridge" },
+    "2": { "dept": "Intelligence", "skill": "google-search", "mcp": "exa" },
+    "3": { "dept": "Strategy", "skill": "requirements-engineer-spec", "mcp": "dude-bridge" },
+    "4": { "dept": "Strategy", "skill": "requirements-engineer-spec", "mcp": "dude-bridge" },
+    "5": { "dept": "Architecture", "skill": "blast-radius-analyst", "mcp": "sequential-thinking" },
+    "6": { "dept": "Architecture", "skill": "senior-architect", "mcp": "dude-bridge" },
+    "7": { "dept": "Memory", "skill": "memory-systems", "mcp": "dude-memory" },
+    "8": { "dept": "Orchestration", "skill": "langgraph-director", "mcp": "redis" },
+    "9": { "dept": "Optimization", "skill": "instruction-compressor", "mcp": "LLMLingua-2" },
+    "10": { "dept": "Infra", "skill": "git-advanced-workflows", "mcp": "github-mcp-server" },
+    "11": { "dept": "Strategy", "skill": "domain-strategy-router", "mcp": "sequential-thinking" },
+    "12": { "dept": "Architecture", "skill": "gemini-skill-creator", "mcp": "dude-bridge" },
+    "13": { "dept": "Backend", "skill": "backend-architect", "mcp": "Docker" },
+    "14": { "dept": "Frontend", "skill": "frontend-developer", "mcp": "Next.js" },
+    "15": { "dept": "Frontend", "skill": "chrome-devtools", "mcp": "chrome-devtools" },
+    "16": { "dept": "Shadow", "skill": "asynchronous-jules-helper", "mcp": "Jules" },
+    "17": { "dept": "Fixer", "skill": "self-correction-pilot", "mcp": "sequential-thinking" },
+    "18": { "dept": "QA", "skill": "test-automation-strategist", "mcp": "dude-bridge" },
+    "19": { "dept": "QA", "skill": "api-contract-guardian", "mcp": "dude-bridge" },
+    "20": { "dept": "Audit", "skill": "code-review-excellence", "mcp": "sequential-thinking" },
+    "21": { "dept": "Security", "skill": "security-auditor", "mcp": "sonatype" },
+    "22": { "dept": "Infra", "skill": "git-workflow-hardener", "mcp": "github-mcp-server" },
+    "23": { "dept": "Security", "skill": "github-actions-guardian", "mcp": "GitHub Actions" },
+    "24": { "dept": "Docs", "skill": "technical-writer", "mcp": "dude-bridge" },
+    "25": { "dept": "Cleanup", "skill": "environment-cleanup-specialist", "mcp": "Docker" },
+    "26": { "dept": "Memory", "skill": "post-mortem-memory", "mcp": "dude-memory" }
+  }
+}
