@@ -1,1 +1,0 @@
-"""ux-researcher skill module."""

@@ -38,3 +38,6 @@ build/
 opencode.json
 global_skills/google-slides-visual-creator/resources/credentials.json
 global_skills/google-slides-visual-creator/resources/token.pickle
+
+# Global skills (local only)
+global_skills/
