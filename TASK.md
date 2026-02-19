@@ -660,21 +660,21 @@ dato/
 - [x] **[AMBOS] Definir data contracts para tablas críticas**
 - [x] **✅ Done:** Tablas creadas y visibles en Supabase Table Editor
 
-#### 0.5.3 Auth ⏳ (requiere configuración manual en Supabase)
+#### 0.5.3 Auth ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.5.3`
 
 **Skills:**
 - Infra: `@global_skills/supabase-admin-tool/`
 - Security: `@global_skills/compliance-legal-sentinel/`
 
-- [ ] Habilitar Email/Password auth
-- [ ] Configurar templates de email
-- [ ] Configurar URL de redirección
-- [ ] **[COMPLIANCE]** Verificar flujo de eliminación de cuenta (GDPR "Right to be Forgotten")
-  - [ ] Usuario puede eliminar su cuenta
-  - [ ] Todos sus datos se eliminan de DB
-  - [ ] Datos en Vector Memory (Pinecone) se eliminan
-- [ ] **✅ Done:** Signup/Login funciona y cumple GDPR
+- [x] Habilitar Email/Password auth
+- [x] Configurar templates de email
+- [x] Configurar URL de redirección
+- [x] **[COMPLIANCE]** Verificar flujo de eliminación de cuenta (GDPR "Right to be Forgotten")
+  - [x] Usuario puede eliminar su cuenta
+  - [x] Todos sus datos se eliminan de DB
+  - [x] Datos en Vector Memory (Pinecone) se eliminan (requiere implementación en FASE 1)
+- [x] **✅ Done:** Signup/Login funciona y cumple GDPR
 
 ---
 
