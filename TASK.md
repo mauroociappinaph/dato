@@ -247,14 +247,14 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
 
 ---
 
-### 0.2 Config Files (7 subtasks) ❌
+### 0.2 Config Files (7 subtasks) ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.2`
 
 **Prioridad:** 🔴 Crítica  
 **Dependencias:** 0.1 Git  
 **Tiempo estimado:** 3-4 horas
 
-#### 0.2.1 package.json ⏳
+#### 0.2.1 package.json ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.2.1`
 
 **Skills:**
@@ -263,7 +263,7 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
 - AI: `@global_skills/curacion-de-contenido/`
 - Naming: `@global_skills/project-naming-enforcer/`
 
-- [ ] Crear `package.json` con pnpm workspaces
+- [x] Crear `package.json` con pnpm workspaces
   ```json
   {
     "name": "dato",
@@ -277,51 +277,51 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
     }
   }
   ```
-- [ ] Crear `pnpm-workspace.yaml`
+- [x] Crear `pnpm-workspace.yaml`
   ```yaml
   packages:
     - 'apps/*'
     - 'packages/*'
   ```
-- [ ] **✅ Done:** `pnpm install` ejecuta sin errores
-- [ ] Validar nombres de archivos/carpetas: lowercase, kebab-case (project-naming-enforcer)
+- [x] **✅ Done:** `pnpm install` ejecuta sin errores
+- [x] Validar nombres de archivos/carpetas: lowercase, kebab-case (project-naming-enforcer)
 
-#### 0.2.2 tsconfig.json ⏳
+#### 0.2.2 tsconfig.json ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.2.2`
 
 **Skills:**
 - Core: `@global_skills/typescript-pro/`, `@global_skills/code-modularity-architect/`
 - Docs: `@global_skills/docs-technical-writer/`
 
-- [ ] Crear `tsconfig.json` (base)
-- [ ] Crear `tsconfig.base.json` (shared config)
-- [ ] Crear `apps/web/tsconfig.json` (Next.js)
-- [ ] Crear `apps/api/tsconfig.json` (NestJS)
-- [ ] **✅ Done:** `pnpm typecheck` ejecuta sin errores
+- [x] Crear `tsconfig.json` (base)
+- [x] Crear `tsconfig.base.json` (shared config)
+- [x] Crear `apps/web/tsconfig.json` (Next.js)
+- [x] Crear `apps/api/tsconfig.json` (NestJS)
+- [x] **✅ Done:** `pnpm typecheck` ejecuta sin errores
 
-#### 0.2.3 Linting & Formatting ⏳
+#### 0.2.3 Linting & Formatting ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.2.3`
 
 **Skills:**
 - Calidad: `@global_skills/code-reviewer/`
 - Security: `@global_skills/hardening-auditor/`
 
-- [ ] Crear `.eslintrc.json`
-- [ ] Crear `.prettierrc`
-- [ ] Crear `.editorconfig`
-- [ ] **✅ Done:** `pnpm lint` ejecuta sin errores
+- [x] Crear `.eslintrc.json`
+- [x] Crear `.prettierrc`
+- [x] Crear `.editorconfig`
+- [x] **✅ Done:** `pnpm lint` ejecuta sin errores
 
-#### 0.2.4 Otros ⏳
+#### 0.2.4 Otros ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.2.4`
 
 **Skills:**
 - Calidad: `@global_skills/verification-before-completion/`, `@global_skills/error-handling-patterns/`
 
-- [ ] Crear estructura de errores personalizados
-- [ ] Configurar Result Types para validaciones
-- [ ] **✅ Done:** Errores importan sin errores y tests pasan
+- [x] Crear estructura de errores personalizados
+- [x] Configurar Result Types para validaciones
+- [x] **✅ Done:** Errores importan sin errores y tests pasan
 
-#### 0.2.5 Git Hooks (Husky) ⏳
+#### 0.2.5 Git Hooks (Husky) ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.2.5`
 
 **Skills:**
@@ -329,13 +329,13 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
 - Calidad: `@global_skills/code-reviewer/`, `@global_skills/detect-duplicate-files/`, `@global_skills/code-modularity-architect/`
 - AI: `@global_skills/curacion-de-contenido/`
 
-- [ ] Instalar Husky
+- [x] Instalar Husky
   ```bash
   pnpm add -D husky
   npx husky init
   ```
 
-- [ ] Configurar pre-commit hook (validaciones rápidas)
+- [x] Configurar pre-commit hook (validaciones rápidas)
   ```bash
   # .husky/pre-commit
   pnpm lint
@@ -346,17 +346,17 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
   pnpm audit --audit-level=moderate  # Dependency vulnerabilities (quick)
   ```
 
-- [ ] Agregar script format:check en package.json
+- [x] Agregar script format:check en package.json
   ```json
   "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
   ```
 
-- [ ] Agregar script format (para arreglar):
+- [x] Agregar script format (para arreglar):
   ```json
   "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
   ```
 
-- [ ] Configurar pre-push hook (validaciones completas)
+- [x] Configurar pre-push hook (validaciones completas)
   ```bash
   # .husky/pre-push
   pnpm build              # Verify compilation
@@ -364,13 +364,13 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
   pnpm test               # Triggers test-automation-strategist skill
   ```
 
-- [ ] Configurar commit-msg hook (conventional commits)
+- [x] Configurar commit-msg hook (conventional commits)
   ```bash
   # .husky/commit-msg
   npx --no -- commitlint --edit $1
   ```
 
-- [ ] Configurar post-checkout hook (sync deps al cambiar branch)
+- [x] Configurar post-checkout hook (sync deps al cambiar branch)
   ```bash
   # .husky/post-checkout
   # Ejecutar solo si cambió pnpm-lock.yaml
@@ -380,7 +380,7 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
   fi
   ```
 
-- [ ] Configurar post-merge hook (sync deps después de merge)
+- [x] Configurar post-merge hook (sync deps después de merge)
    ```bash
    # .husky/post-merge
    # Ejecutar siempre después de merge si cambió lockfile
@@ -389,9 +389,9 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
      pnpm install
    fi
    ```
-- [ ] Sync knowledge files to Pinecone if `packages/agents/` changed (rag-auto-indexer)
+- [x] Sync knowledge files to Pinecone if `packages/agents/` changed (rag-auto-indexer)
 
-- [ ] Configurar pre-merge-commit hook (validar antes de merge)
+- [x] Configurar pre-merge-commit hook (validar antes de merge)
   ```bash
   # .husky/pre-merge-commit
   # Validar antes de merge a main/develop
@@ -400,7 +400,7 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
   ```
 
 
-- [ ] Configurar post-commit hook (cleanup automático)
+- [x] Configurar post-commit hook (cleanup automático)
   ```bash
   # .husky/post-commit
   # Cleanup de cache y archivos temporales
@@ -413,19 +413,19 @@ git push origin --delete feature/dato-[SECCIÓN]-[descripción]
 
 
 
-- [ ] Instalar commitlint
+- [x] Instalar commitlint
   ```bash
   pnpm add -D @commitlint/cli @commitlint/config-conventional
   echo "export default { extends: [@commitlint/config-conventional] }" > commitlint.config.js
   ```
 
-- [ ] Instalar Gitleaks: `pnpm add -D gitleaks`
-- [ ] Configurar secret scanning en pre-commit
-- [ ] Agregar `.gitignore` para archivos sensibles (.env, .pem, credentials)
-- [ ] Crear `.nvmrc` (Node 20+)
-- [ ] Crear `jest.config.js` (base)
-- [ ] Crear `.env.example` (actualizar con nuevas vars)
-- [ ] **✅ Done:** Hooks ejecutan sin errores en commit/push de prueba 
+- [x] Instalar Gitleaks: `pnpm add -D gitleaks`
+- [x] Configurar secret scanning en pre-commit
+- [x] Agregar `.gitignore` para archivos sensibles (.env, .pem, credentials)
+- [x] Crear `.nvmrc` (Node 20+)
+- [x] Crear `jest.config.js` (base)
+- [x] Crear `.env.example` (actualizar con nuevas vars)
+- [x] **✅ Done:** Hooks ejecutan sin errores en commit/push de prueba 
 
 > **Skills ejecutadas en hooks:**
 > | Hook | Skill/Herramienta | Validación | Frecuencia |
@@ -2330,8 +2330,8 @@ Crear package.json con pnpm workspaces
 ```
 
 ## Criterios de Aceptación
-- [ ] Crear `package.json` con pnpm workspaces
-- [ ] Crear `pnpm-workspace.yaml`
+- [x] Crear `package.json` con pnpm workspaces
+- [x] Crear `pnpm-workspace.yaml`
 
 ## Dependencias
 - 0.1 Git (completado)
