@@ -617,7 +617,7 @@ dato/
 
 ---
 
-### 0.5 Supabase Setup ⏳
+### 0.5 Supabase Setup ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.5`
 
 > **Nota:** Supabase YA está configurado en `opencode.json`. No es necesario agregar claves allí.
@@ -631,36 +631,36 @@ dato/
 - Security: `@global_skills/security-auditor/`
 - Calidad: `@global_skills/error-handling-patterns/`, `@global_skills/data-quality-frameworks/`
 
-#### 0.5.1 Proyecto Supabase ⏳
+#### 0.5.1 Proyecto Supabase ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.5.1`
 
-- [ ] Crear proyecto "DATO" en supabase.com (si no existe)
-- [ ] Configurar región: US East o Sao Paulo (latencia)
-- [ ] Guardar credenciales (ya están en opencode.json, solo verificar):
+- [x] Crear proyecto "DATO" en supabase.com (si no existe)
+- [x] Configurar región: US East o Sao Paulo (latencia)
+- [x] Guardar credenciales (ya están en opencode.json, solo verificar):
   - `SUPABASE_URL`
   - `SUPABASE_ANON_KEY`
   - `SUPABASE_SERVICE_KEY`
-- [ ] **✅ Done:** Proyecto visible en dashboard de Supabase
+- [x] **✅ Done:** Proyecto visible en dashboard de Supabase
 
-#### 0.5.2 Base de Datos ⏳
+#### 0.5.2 Base de Datos ✅
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.5.2`
 
-- [ ] Ejecutar migraciones SQL (ver `docs/specs/database.md`)
-  - [ ] Tabla `users`
-  - [ ] Tabla `claims`
-  - [ ] Tabla `verifications`
-  - [ ] Tabla `economic_data`
-  - [ ] Tabla `news_items`
-  - [ ] Tabla `llm_usage` ← Token tracking
-  - [ ] Tabla `subscriptions`
-  - [ ] Tabla `alerts`
-- [ ] Configurar Row Level Security (RLS)
-- [ ] Crear índices
-- [ ] **[DEV] Configurar data quality constraints** (NOT NULL, UNIQUE, FK)
-- [ ] **[AMBOS] Definir data contracts para tablas críticas**
-- [ ] **✅ Done:** Tablas creadas y visibles en Supabase Table Editor
+- [x] Ejecutar migraciones SQL (ver `docs/specs/database.md`)
+  - [x] Tabla `users`
+  - [x] Tabla `claims`
+  - [x] Tabla `verifications`
+  - [x] Tabla `economic_data`
+  - [x] Tabla `news_items`
+  - [x] Tabla `llm_usage` ← Token tracking
+  - [x] Tabla `subscriptions`
+  - [x] Tabla `alerts`
+- [x] Configurar Row Level Security (RLS)
+- [x] Crear índices
+- [x] **[DEV] Configurar data quality constraints** (NOT NULL, UNIQUE, FK)
+- [x] **[AMBOS] Definir data contracts para tablas críticas**
+- [x] **✅ Done:** Tablas creadas y visibles en Supabase Table Editor
 
-#### 0.5.3 Auth ⏳
+#### 0.5.3 Auth ⏳ (requiere configuración manual en Supabase)
 > **Ejecutar:** `python3 global_skills/task-prompt-engineer/scripts/prompt_generator.py 0.5.3`
 
 **Skills:**

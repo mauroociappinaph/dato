@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_DIRECT_URL")
+}
+
+model User {
+  id                     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                  String   @unique
+  fullName               String?  @map("full_name")
+  avatarUrl              String?  @map("avatar_url")
+  role                   String   @default("user")
+  plan                   String   @default("free")
+  planStartedAt          DateTime? @map("plan_started_at")
+  planEndsAt             DateTime? @map("plan_ends_at")
+  stripeCustomerId       String?  @map("stripe_customer_id")
+  stripeSubscriptionId   String?  @map("stripe_subscription_id")
+  verificationsUsedToday Int      @default(0) @map("verifications_used_today")
+  lastVerificationReset  DateTime @default(now()) @map("last_verification_reset") @db.Date
+  preferences            Json     @default("{}")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @default(now()) @map("updated_at")
+
+  subscriptions Subscription[]
+  alerts        Alert[]
+  llmUsage      LlmUsage[]
+
+  @@map("users")
+}
+
+model Claim {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimText            String   @map("claim_text")
+  normalizedText       String?  @map("normalized_text")
+  speaker              String
+  speakerNormalized    String?  @map("speaker_normalized")
+  speakerParty         String?  @map("speaker_party")
+  speakerRole          String?  @map("speaker_role")
+  sourceType           String   @map("source_type")
+  sourceUrl            String?  @map("source_url")
+  sourceTitle          String?  @map("source_title")
+  context              String?
+  category             String
+  dateSaid             DateTime @map("date_said") @db.Date
+  dateExtracted        DateTime @default(now()) @map("date_extracted")
+  extractionConfidence Decimal? @map("extraction_confidence") @db.Decimal(3, 2)
+  extractionAgent      String   @default("agent-2") @map("extraction_agent")
+  status               String   @default("pending")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @default(now()) @map("updated_at")
+
+  verifications Verification[]
+
+  @@index([speakerNormalized])
+  @@index([category])
+  @@index([dateSaid])
+  @@index([status])
+  @@map("claims")
+}
+
+model Verification {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  claimId            String   @map("claim_id") @db.Uuid
+  verdict            String
+  confidence         Decimal  @db.Decimal(3, 2)
+  explanation        String
+  simpleExplanation  String   @map("simple_explanation")
+  sources            Json     @default("[]")
+  llmProvider        String   @map("llm_provider")
+  llmModel           String   @map("llm_model")
+  llmTokensInput     Int?     @map("llm_tokens_input")
+  llmTokensOutput    Int?     @map("llm_tokens_output")
+  llmLatencyMs       Int?     @map("llm_latency_ms")
+  verificationAgent  String   @default("agent-3") @map("verification_agent")
+  verifiedAt         DateTime @default(now()) @map("verified_at")
+  verifiedBy         String?  @map("verified_by")
+  published          Boolean  @default(false)
+  publishedAt        DateTime? @map("published_at")
+  publishedChannels  Json     @default("[]") @map("published_channels")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  claim Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+  @@index([verdict])
+  @@index([published])
+  @@map("verifications")
+}
+
+model EconomicData {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  indicator       String
+  value           Decimal  @db.Decimal(12, 4)
+  previousValue   Decimal? @map("previous_value") @db.Decimal(12, 4)
+  period          DateTime @db.Date
+  periodType      String   @map("period_type")
+  source          String
+  sourceUrl       String?  @map("source_url")
+  unit            String?
+  notes           String?
+  collectedAt     DateTime @default(now()) @map("collected_at")
+  collectionAgent String   @default("agent-1") @map("collection_agent")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@unique([indicator, period, source])
+  @@index([indicator, period])
+  @@index([source])
+  @@map("economic_data")
+}
+
+model NewsItem {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  summary         String
+  content         String?
+  source          String
+  sourceUrl       String?  @unique @map("source_url")
+  category        String
+  publishedAt     DateTime? @map("published_at")
+  collectedAt     DateTime @default(now()) @map("collected_at")
+  relevanceScore  Decimal? @map("relevance_score") @db.Decimal(3, 2)
+  processed       Boolean  @default(false)
+  claimsExtracted Int      @default(0) @map("claims_extracted")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([publishedAt])
+  @@index([category])
+  @@index([processed])
+  @@map("news_items")
+}
+
+model LlmUsage {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider      String
+  model         String
+  agent         String
+  operation     String
+  tokensInput   Int      @map("tokens_input")
+  tokensOutput  Int      @map("tokens_output")
+  costUsd       Decimal  @map("cost_usd") @db.Decimal(10, 6)
+  latencyMs     Int      @map("latency_ms")
+  success       Boolean
+  errorMessage  String?  @map("error_message")
+  requestId     String?  @map("request_id")
+  userId        String?  @map("user_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([agent])
+  @@index([provider])
+  @@map("llm_usage")
+}
+
+model Subscription {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String   @map("user_id") @db.Uuid
+  stripeSubscriptionId String   @unique @map("stripe_subscription_id")
+  stripeCustomerId     String   @map("stripe_customer_id")
+  status               String
+  plan                 String
+  currentPeriodStart   DateTime? @map("current_period_start")
+  currentPeriodEnd     DateTime? @map("current_period_end")
+  cancelAtPeriodEnd    Boolean  @default(false) @map("cancel_at_period_end")
+  canceledAt           DateTime? @map("canceled_at")
+  trialStart           DateTime? @map("trial_start")
+  trialEnd             DateTime? @map("trial_end")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @default(now()) @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([stripeSubscriptionId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+model Alert {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  type             String
+  value            String
+  channels         Json     @default("[\"push\"]")
+  active           Boolean  @default(true)
+  lastTriggeredAt  DateTime? @map("last_triggered_at")
+  triggerCount     Int      @default(0) @map("trigger_count")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type, value])
+  @@map("alerts")
+}
