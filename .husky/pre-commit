@@ -1,0 +1,25 @@
+echo "🔍 Running pre-commit checks..."
+
+# Format check
+echo "📝 Checking formatting..."
+pnpm format:check
+
+# Lint
+echo "🧹 Running linter..."
+pnpm lint
+
+# Typecheck
+echo "🔧 Type checking..."
+pnpm typecheck
+
+# Modularity check
+echo "📦 Checking modularity..."
+pnpm modularity:check
+
+# Secret scanning (if gitleaks is installed)
+if command -v gitleaks &> /dev/null; then
+  echo "🔐 Scanning for secrets..."
+  gitleaks protect --staged
+fi
+
+echo "✅ Pre-commit checks passed!"

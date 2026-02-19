@@ -1,0 +1,5 @@
+
+# Cleanup cache and temp files
+rm -rf node_modules/.cache 2>/dev/null || true
+rm -rf .tsbuildinfo 2>/dev/null || true
+echo "🧹 Workspace cleaned after commit"

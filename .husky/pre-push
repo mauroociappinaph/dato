@@ -1,0 +1,16 @@
+
+echo "🚀 Running pre-push checks..."
+
+# Build
+echo "🏗️ Building..."
+pnpm build
+
+# Check for duplicates
+echo "🔍 Checking for duplicates..."
+pnpm duplicates:check
+
+# Run tests
+echo "🧪 Running tests..."
+pnpm test:all
+
+echo "✅ Pre-push checks passed!"

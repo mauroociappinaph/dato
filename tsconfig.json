@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@dato/shared": ["packages/shared/src"],
+      "@dato/shared/*": ["packages/shared/src/*"],
+      "@dato/agents": ["packages/agents/src"],
+      "@dato/agents/*": ["packages/agents/src/*"],
+      "@dato/database": ["packages/database/src"],
+      "@dato/database/*": ["packages/database/src/*"]
+    }
+  },
+  "references": [
+    { "path": "./apps/web" },
+    { "path": "./apps/api" },
+    { "path": "./packages/shared" },
+    { "path": "./packages/agents" },
+    { "path": "./packages/database" }
+  ],
+  "include": [],
+  "exclude": ["node_modules", "dist", ".next", "coverage"]
+}

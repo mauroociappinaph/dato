@@ -1,0 +1,7 @@
+
+echo "🔍 Running pre-merge checks..."
+
+pnpm lint
+pnpm test:all
+
+echo "✅ Pre-merge checks passed!"
