@@ -35,7 +35,6 @@
     "declarationMap": true,
     "sourceMap": true,
     "incremental": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true
+    "isolatedModules": true
   }
 }

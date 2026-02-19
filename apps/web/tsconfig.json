@@ -11,6 +11,7 @@
     "composite": true,
     "tsBuildInfoFile": ".tsbuildinfo",
     "baseUrl": ".",
+    "rootDir": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@dato/shared": ["../../packages/shared/src"],
