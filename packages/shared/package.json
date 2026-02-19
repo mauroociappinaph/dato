@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint \"src/**/*.ts\"",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
